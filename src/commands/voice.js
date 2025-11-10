@@ -83,7 +83,7 @@ async function startRecording(interaction, voiceChannel) {
       if (!activeRecordings.has(guildId)) return;
 
       const user = voiceChannel.guild.members.cache.get(userId);
-      console.log(`🎤 ${user?.user.tag || userId} started speaking`);
+      console.log(`🎤 ${user?.displayName || user?.user.tag || userId} started speaking`);
 
       const audioStream = connection.receiver.subscribe(userId, {
         end: {
@@ -113,7 +113,7 @@ async function startRecording(interaction, voiceChannel) {
 
       pipeline(audioStream, decoder, out, (err) => {
         if (err) {
-          console.error(`Error recording ${user?.user.tag}:`, err);
+          console.error(`Error recording ${user?.displayName || user?.user.tag}:`, err);
         } else {
           console.log(`✅ Saved recording: ${filename}`);
         }
@@ -241,7 +241,7 @@ async function processRecordings(guildId, recordingData, interaction) {
       if (pcmPaths.length === 0) continue;
 
       // Merge PCM files by concatenating binary data
-      console.log(`🔄 Merging ${pcmPaths.length} recording(s) for ${user?.user.tag || userId}...`);
+      console.log(`🔄 Merging ${pcmPaths.length} recording(s) for ${user?.displayName || user?.user.tag || userId}...`);
       
       if (pcmPaths.length === 1) {
         // Only one file, just copy it
@@ -256,7 +256,7 @@ async function processRecordings(guildId, recordingData, interaction) {
         }
       }
 
-      console.log(`✅ Merged ${pcmPaths.length} recordings for ${user?.user.tag || userId}`);
+      console.log(`✅ Merged ${pcmPaths.length} recordings for ${user?.displayName || user?.user.tag || userId}`);
 
       // Check merged file size
       const { size: mergedSize } = await stat(mergedPcmPath);
@@ -265,7 +265,7 @@ async function processRecordings(guildId, recordingData, interaction) {
       if (mergedSize === 0) {
         console.error('⚠️ Merged file is empty, skipping conversion');
         await interaction.followUp({
-          content: `⚠️ No audio data for ${user?.user.tag || 'Unknown'}`,
+          content: `⚠️ No audio data for ${user?.displayName || 'Unknown'}`,
         });
         continue;
       }
@@ -285,7 +285,7 @@ async function processRecordings(guildId, recordingData, interaction) {
 
         // Send the MP3 file
         await interaction.followUp({
-          content: `🎵 Recording from ${user?.user.tag || 'Unknown'} (${pcmPaths.length} segment${pcmPaths.length > 1 ? 's' : ''})`,
+          content: `🎵 Recording from ${user?.displayName || 'Unknown'} (${pcmPaths.length} segment${pcmPaths.length > 1 ? 's' : ''})`,
           files: [mergedMp3Path],
         });
 
@@ -314,7 +314,7 @@ async function processRecordings(guildId, recordingData, interaction) {
         }
 
         if (transcription) {
-          allTranscriptions += `**${user?.user.tag || 'Unknown'}:**\n${transcription}\n\n`;
+          allTranscriptions += `**${user?.displayName || 'Unknown'}:**\n${transcription}\n\n`;
         }
 
         // Clean up PCM files
@@ -325,7 +325,7 @@ async function processRecordings(guildId, recordingData, interaction) {
       } catch (conversionError) {
         console.error(`Error converting merged recording:`, conversionError);
         await interaction.followUp({
-          content: `⚠️ Could not convert recording from ${user?.user.tag || 'Unknown'}`,
+          content: `⚠️ Could not convert recording from ${user?.displayName || 'Unknown'}`,
         });
       }
     } catch (error) {
