@@ -1,12 +1,12 @@
 # Magic Minutes 🎙️✨
 
-A powerful Discord bot that records voice chats, transcribes them using Google Gemini AI, and generates intelligent summaries using GPT. Never miss important details from your Discord voice conversations!
+A powerful Discord bot that records voice chats, transcribes them using Google Gemini AI, and generates intelligent summaries. Never miss important details from your Discord voice conversations!
 
 ## Features
 
 - 🎤 **Voice Recording**: Record Discord voice channel conversations with high quality
 - 📝 **AI Transcription**: Automatic transcription using Google Gemini AI
-- 📊 **Smart Summaries**: Generate concise summaries of conversations using GPT
+- 📊 **Smart Summaries**: Generate concise summaries of conversations
 - 👥 **Per-User Recording**: Separate audio streams for each participant
 - 📁 **Easy Access**: Receive recordings, transcriptions, and summaries directly in Discord
 
@@ -127,8 +127,8 @@ magic-minutes/
 │   │   ├── register.js      # Command registration
 │   │   └── voice.js          # Voice recording logic
 │   ├── services/
-│   │   ├── transcription.js  # OpenAI Whisper integration
-│   │   └── summarization.js  # OpenAI GPT summarization
+│   │   ├── transcription.js  # Gemini integration
+│   │   └── summarization.js  # Gemini summarization
 │   └── index.js              # Main bot entry point
 ├── recordings/               # Stored audio files (gitignored)
 ├── .env                      # Environment variables (gitignored)
@@ -145,18 +145,10 @@ magic-minutes/
 
 3. **Transcription**: After stopping the recording, each audio file is sent to Google Gemini AI for transcription.
 
-4. **Summarization**: The combined transcriptions are sent to GPT-4 to generate a concise summary highlighting key points and action items.
+4. **Summarization**: The combined transcriptions are sent to Google Gemini to generate a concise summary highlighting key points and action items.
 
 5. **Delivery**: The bot sends the audio files, transcriptions, and summary directly to the Discord channel.
-
-## API Costs
-
-This bot uses OpenAI APIs which have associated costs:
-
-- **Whisper API**: ~$0.006 per minute of audio
-- **GPT-4o-mini API**: ~$0.15 per 1M input tokens, ~$0.60 per 1M output tokens
-
-Monitor your usage in the [OpenAI Dashboard](https://platform.openai.com/usage).
+   
 
 ## Troubleshooting
 
