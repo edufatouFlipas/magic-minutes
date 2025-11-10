@@ -1,14 +1,15 @@
-# Render manifest to deploy this project as a Background Worker (non-HTTP)
+# Render manifest to deploy this project as a web service
 #
-# This defines a worker service so Render will not expect an HTTP port or
-# health checks. Keep secrets in the Render dashboard (do NOT commit tokens).
+# This defines a web service so Render will expect an HTTP port and
+# health checks.
 
 services:
-  - type: worker
-    name: magic-minutes-worker
+  - type: web
+    name: magic-minutes-web
     env: node
     plan: free
     branch: develop
     buildCommand: npm install
     startCommand: npm start
     autoDeploy: true
+    healthCheckPath: /health

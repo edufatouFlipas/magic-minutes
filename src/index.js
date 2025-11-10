@@ -3,11 +3,31 @@ import './utils/init-crypto.js';
 
 import { Client, GatewayIntentBits } from 'discord.js';
 import { getVoiceConnections } from '@discordjs/voice';
+import http from 'http';
 import { config } from 'dotenv';
 import { registerCommands } from './commands/register.js';
 import { handleVoiceCommand } from './commands/voice.js';
 
 config();
+
+// Minimal HTTP server for Render health checks (and other minimal probes).
+// Render free web services expect the process to bind to $PORT. This server
+// responds 200 on /health to indicate the process is alive. It is intentionally
+// tiny and does not expose any sensitive information.
+const port = process.env.PORT ? Number(process.env.PORT) : 3000;
+const server = http.createServer((req, res) => {
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    return res.end('OK');
+  }
+  // Return 404 for anything else to avoid exposing endpoints unintentionally
+  res.statusCode = 404;
+  res.end();
+});
+
+server.listen(port, () => {
+  console.log(`🌐 Health server listening on port ${port}`);
+});
 
 const client = new Client({
   intents: [
